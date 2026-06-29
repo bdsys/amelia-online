@@ -16,12 +16,24 @@ npm install
 npm run dev          # Next.js dev server on http://localhost:3000
 ```
 
+There's also a `Makefile` for convenience:
+
+```bash
+make up               # start the dev server (backgrounded) on :3000
+make down             # stop it (and sweep any orphaned process on the port)
+make test-all         # typecheck → lint → unit tests → build + route smoke test
+make test-smoke       # build, then curl every route and check content
+make build-worker     # OpenNext Cloudflare build → .open-next/
+make preview          # local Workers-runtime (workerd) preview of the built worker
+make clean            # rm -rf .next .open-next .wrangler
+```
+
 Quality gate (matches CI — run before pushing):
 
 ```bash
-npm run lint         # ESLint
-npm run typecheck    # tsc --noEmit
-npm run test         # Vitest unit tests (jsdom)
+npm run lint         # ESLint        (make lint)
+npm run typecheck    # tsc --noEmit  (make typecheck)
+npm run test         # Vitest        (make test)
 ```
 
 Build + preview in the real Workers runtime locally:

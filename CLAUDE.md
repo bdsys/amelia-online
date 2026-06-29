@@ -32,7 +32,20 @@ npm run preview      # run the built Worker locally (workerd)
 npm run deploy       # deploy to Cloudflare (CI does this on push to main)
 ```
 
-Run the full local gate before pushing: `npm run lint && npm run typecheck && npm run test`.
+Or via the `Makefile`:
+
+```bash
+make up / make down  # start / stop the backgrounded dev server (:3000)
+make typecheck lint test
+make test-smoke      # build + curl every route, checking content
+make test-all        # typecheck → lint → test → test-smoke  (full local gate)
+make build-worker    # OpenNext Cloudflare build
+make preview         # local workerd preview
+make clean           # rm -rf .next .open-next .wrangler
+```
+
+Run the full local gate before pushing: `make test-all` (or
+`npm run lint && npm run typecheck && npm run test`).
 
 ## Conventions
 
