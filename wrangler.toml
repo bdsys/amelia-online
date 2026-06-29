@@ -1,0 +1,40 @@
+name = "amelia-online"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+main = ".open-next/worker.js"
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# ── Custom domains ────────────────────────────────────────────────────────────
+# These attach amelialass.com to the Worker on deploy. They REQUIRE the
+# amelialass.com DNS zone to be Active on this Cloudflare account first.
+#
+# STAGE A (prove the CI/deploy wiring before DNS is ready): leave these routes
+# commented out — `wrangler deploy` then publishes to the account's
+# <worker>.<subdomain>.workers.dev URL with no domain attachment needed.
+#
+# STAGE B (go live): once the zone shows Active in the dashboard, uncomment the
+# routes below and push again to attach the custom domains.
+#
+# [[routes]]
+# pattern = "amelialass.com"
+# custom_domain = true
+# [[routes]]
+# pattern = "www.amelialass.com"
+# custom_domain = true
+
+# ── Preview / staging environment ─────────────────────────────────────────────
+# Deploy with: npm run deploy:preview  (push to the `preview` branch in CI)
+[env.preview]
+name = "amelia-online-preview"
+
+[env.preview.assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# Uncomment once preview.amelialass.com DNS is ready (Stage B):
+# [[env.preview.routes]]
+# pattern = "preview.amelialass.com"
+# custom_domain = true
