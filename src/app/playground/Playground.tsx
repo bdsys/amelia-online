@@ -373,23 +373,20 @@ export default function Playground() {
           if (updated[a].e === updated[b].e) {
             // Match
             setTimeout(() => {
+              let didWin = false;
               setMemCards((c) => {
                 const next = c.map((card, i) =>
                   i === a || i === b
                     ? { ...card, matched: true, flipped: false }
                     : card
                 );
-                // Check win
-                if (next.every((c) => c.matched)) {
-                  spawn(
-                    typeof window !== "undefined" ? window.innerWidth / 2 : 150,
-                    typeof window !== "undefined" ? window.innerHeight / 2 : 300,
-                    26
-                  );
-                }
+                didWin = next.every((c) => c.matched);
                 memLockedRef.current = false;
                 return next;
               });
+              if (didWin) {
+                spawn(window.innerWidth / 2, window.innerHeight / 2, 26);
+              }
             }, 380);
           } else {
             // No match — flip back
@@ -421,7 +418,6 @@ export default function Playground() {
 
   // ─── Render ────────────────────────────────────────────────────────────────
   const commonProps = {
-    particles,
     onHome: goHome,
   };
 
