@@ -59,6 +59,21 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  async redirects() {
+    // Canonicalize on the apex: www.amelialass.com → amelialass.com.
+    // `has` host condition fires only for www, so the apex serves normally.
+    // statusCode 301 (not `permanent`, which Next.js emits as 308) per request.
+    // Path + query string are carried through by the :path* match.
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.amelialass.com" }],
+        destination: "https://amelialass.com/:path*",
+        statusCode: 301,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
