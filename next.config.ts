@@ -60,31 +60,11 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  async redirects() {
-    // Canonicalize on the apex: www.amelialass.com → amelialass.com.
-    // `has` host condition fires only for www, so the apex serves normally.
-    // statusCode 301 (not `permanent`, which Next.js emits as 308) per request.
-    //
-    // Split into two rules: a catch-all `:path*` leaves a literal ":path*" in
-    // the Location header when it matches ZERO segments (the bare root), which
-    // 404s. So handle the root explicitly, and use `:path+` (one-or-more) for
-    // sub-paths. Query strings are forwarded automatically in both cases.
-    const wwwHost = [{ type: "host" as const, value: "www.amelialass.com" }];
-    return [
-      {
-        source: "/",
-        has: wwwHost,
-        destination: "https://amelialass.com/",
-        statusCode: 301,
-      },
-      {
-        source: "/:path+",
-        has: wwwHost,
-        destination: "https://amelialass.com/:path+",
-        statusCode: 301,
-      },
-    ];
-  },
 };
+
+// NOTE: the www → apex 301 lives in src/middleware.ts, not here. next.config's
+// `has` host condition matches the host UNANCHORED, so "www.amelialass.com"
+// also matches "preview.www.amelialass.com" and would redirect the staging
+// domain to production. Middleware does an exact `===` host compare instead.
 
 export default nextConfig;
