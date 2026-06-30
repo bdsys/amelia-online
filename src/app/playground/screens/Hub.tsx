@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Screen } from "../Playground";
 import type { Greeting } from "@/lib/playground-date";
+import type { ThemeKey } from "@/lib/playground-theme";
 
 type CardDef = {
   id: string;
@@ -19,6 +20,8 @@ type HubProps = {
   cardBg: string[];
   cardShadow: string[];
   onGoTo: (s: Screen) => void;
+  theme: ThemeKey;
+  onCycleTheme: () => void;
 };
 
 export default function Hub({
@@ -29,6 +32,7 @@ export default function Hub({
   cardBg,
   cardShadow,
   onGoTo,
+  onCycleTheme,
 }: HubProps) {
   return (
     <div
@@ -43,6 +47,36 @@ export default function Hub({
         boxSizing: "border-box",
       }}
     >
+      {/* Theme pill */}
+      <button
+        onClick={onCycleTheme}
+        style={{
+          position: "fixed",
+          top: 16,
+          right: 16,
+          background: "var(--pg-play)",
+          border: "none",
+          borderRadius: 999,
+          padding: "8px 18px",
+          fontSize: 22,
+          cursor: "pointer",
+          animation: "pg-pulse 2.2s ease-in-out infinite",
+          backdropFilter: "blur(6px)",
+          color: "var(--pg-ink)",
+          fontFamily: "var(--font-display)",
+          fontWeight: 700,
+          zIndex: 10,
+          minWidth: 48,
+          minHeight: 48,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        aria-label="Change theme"
+      >
+        🎨
+      </button>
+
       {/* Avatar */}
       <div
         style={{

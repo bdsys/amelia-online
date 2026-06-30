@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { greeting, ageNow, daysToBday } from "@/lib/playground-date";
+import { type ThemeKey, THEME_ORDER, THEMES, themeToCssVars } from "@/lib/playground-theme";
 import Hub from "./screens/Hub";
 import Pop from "./screens/Pop";
 import Bubbles from "./screens/Bubbles";
@@ -198,6 +199,26 @@ export default function Playground() {
 
   // ABC
   const [abcActive, setAbcActive] = useState<number | null>(null);
+
+  // Theme
+  const [theme, setTheme] = useState<ThemeKey>("bright"); // default for SSR
+
+  // Read persisted theme after mount — avoids hydration mismatch.
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem("amelia-theme");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (s === "bright" || s === "pastel" || s === "dreamy") setTheme(s as ThemeKey);
+    } catch {}
+  }, []);
+
+  const cycleTheme = useCallback(() => {
+    setTheme((t) => {
+      const next = THEME_ORDER[(THEME_ORDER.indexOf(t) + 1) % THEME_ORDER.length];
+      try { localStorage.setItem("amelia-theme", next); } catch {}
+      return next;
+    });
+  }, []);
 
   // Greeting / age / countdown — cheap to compute, just do it in render
   const greetingData = useMemo(() => greeting(), []);
@@ -429,6 +450,7 @@ export default function Playground() {
         fontFamily: "var(--font-display)",
         position: "relative",
         overflow: "hidden",
+        ...themeToCssVars(THEMES[theme]),
       }}
     >
       {screen === "hub" && (
@@ -440,6 +462,8 @@ export default function Playground() {
           cardBg={CARD_BG}
           cardShadow={CARD_SHADOW}
           onGoTo={goTo}
+          theme={theme}
+          onCycleTheme={cycleTheme}
         />
       )}
       {screen === "pop" && (
