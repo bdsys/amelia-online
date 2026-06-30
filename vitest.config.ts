@@ -13,6 +13,12 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
-    exclude: ["**/node_modules/**", "**/.open-next/**", "**/.wrangler/**"],
+    exclude: [
+      "**/node_modules/**",
+      "**/.open-next/**",
+      "**/.wrangler/**",
+      // Playwright E2E specs — run by `npm run test:e2e`, not Vitest
+      "**/tests/e2e/**",
+    ],
   },
 });
