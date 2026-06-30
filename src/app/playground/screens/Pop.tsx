@@ -1,8 +1,6 @@
-import type { Particle } from "../Playground";
 import HomeButton from "./HomeButton";
 
 type PopProps = {
-  particles: Particle[];
   onHome: () => void;
   onTap: (e: React.PointerEvent<HTMLDivElement>) => void;
 };

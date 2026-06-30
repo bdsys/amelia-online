@@ -1,4 +1,3 @@
-import type { Particle } from "../Playground";
 import HomeButton from "./HomeButton";
 
 type Region = {
@@ -14,7 +13,6 @@ type ColoringPage = {
 };
 
 type ColoringProps = {
-  particles: Particle[];
   pages: ColoringPage[];
   page: number;
   fills: Record<string, string>;

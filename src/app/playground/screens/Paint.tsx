@@ -1,11 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import type { Particle } from "../Playground";
 import HomeButton from "./HomeButton";
 
 type PaintProps = {
-  particles: Particle[];
   color: string;
   colors: string[];
   onHome: () => void;

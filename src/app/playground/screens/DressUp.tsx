@@ -1,4 +1,3 @@
-import type { Particle } from "../Playground";
 import HomeButton from "./HomeButton";
 
 type Accessory = {
@@ -10,7 +9,6 @@ type Accessory = {
 };
 
 type DressUpProps = {
-  particles: Particle[];
   wearing: Record<string, boolean>;
   stageBg: string;
   accessories: Accessory[];

@@ -1,11 +1,10 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import type { Particle, Sticker } from "../Playground";
+import type { Sticker } from "../Playground";
 import HomeButton from "./HomeButton";
 
 type StickersProps = {
-  particles: Particle[];
   stickers: Sticker[];
   palette: string[];
   onHome: () => void;

@@ -1,9 +1,8 @@
-import type { MemCard, Particle } from "../Playground";
+import type { MemCard } from "../Playground";
 import HomeButton from "./HomeButton";
 import { CARD_BG, CARD_SHADOW } from "../Playground";
 
 type MatchProps = {
-  particles: Particle[];
   cards: MemCard[];
   onHome: () => void;
   onFlip: (i: number) => void;

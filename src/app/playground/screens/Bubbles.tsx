@@ -1,8 +1,7 @@
-import type { Bubble, Particle } from "../Playground";
+import type { Bubble } from "../Playground";
 import HomeButton from "./HomeButton";
 
 type BubblesProps = {
-  particles: Particle[];
   bubbles: Bubble[];
   onHome: () => void;
 };

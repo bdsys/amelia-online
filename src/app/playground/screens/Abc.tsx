@@ -1,11 +1,9 @@
-import type { Particle } from "../Playground";
 import HomeButton from "./HomeButton";
 import { CARD_BG, CARD_SHADOW } from "../Playground";
 
 type AbcEntry = { l: string; w: string; e: string };
 
 type AbcProps = {
-  particles: Particle[];
   data: AbcEntry[];
   active: number | null;
   onHome: () => void;
