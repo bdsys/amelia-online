@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Baloo_2, Nunito } from "next/font/google";
+import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
 
 // Display face — chunky, rounded, storybook. Used only for Amelia's name.
-const baloo = Baloo_2({
+const fredoka = Fredoka({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
 });
 
 // Body / utility face — rounded, highly legible.
@@ -48,7 +48,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${baloo.variable} ${nunito.variable} h-full antialiased`}
+      className={`${fredoka.variable} ${nunito.variable} h-full antialiased`}
     >
       <body className="flex min-h-dvh flex-col bg-[var(--color-bg)] text-[var(--color-ink)]">
         {children}

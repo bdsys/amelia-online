@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+if (process.env.NODE_ENV === "development") {
+  initOpenNextCloudflareForDev();
+}
 
 // React dev mode uses eval() for callstack reconstruction / source-map debugging.
 // Production never does, so 'unsafe-eval' is dev-only — the deployed Worker keeps
