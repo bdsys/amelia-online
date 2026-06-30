@@ -64,12 +64,23 @@ const nextConfig: NextConfig = {
     // Canonicalize on the apex: www.amelialass.com → amelialass.com.
     // `has` host condition fires only for www, so the apex serves normally.
     // statusCode 301 (not `permanent`, which Next.js emits as 308) per request.
-    // Path + query string are carried through by the :path* match.
+    //
+    // Split into two rules: a catch-all `:path*` leaves a literal ":path*" in
+    // the Location header when it matches ZERO segments (the bare root), which
+    // 404s. So handle the root explicitly, and use `:path+` (one-or-more) for
+    // sub-paths. Query strings are forwarded automatically in both cases.
+    const wwwHost = [{ type: "host" as const, value: "www.amelialass.com" }];
     return [
       {
-        source: "/:path*",
-        has: [{ type: "host", value: "www.amelialass.com" }],
-        destination: "https://amelialass.com/:path*",
+        source: "/",
+        has: wwwHost,
+        destination: "https://amelialass.com/",
+        statusCode: 301,
+      },
+      {
+        source: "/:path+",
+        has: wwwHost,
+        destination: "https://amelialass.com/:path+",
         statusCode: 301,
       },
     ];
