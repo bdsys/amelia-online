@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
+import { vi } from "vitest";
 import Playground from "./Playground";
 
 vi.mock("next/image", () => ({
@@ -32,17 +33,32 @@ describe("Playground", () => {
     }
   });
 
-  it("clicking a card switches to that screen", () => {
-    render(<Playground />);
-    fireEvent.click(screen.getByText("Pop!"));
-    expect(screen.queryByText("Bubbles")).not.toBeInTheDocument();
+  it("clicking a card switches to that screen", async () => {
+    vi.useFakeTimers();
+    try {
+      render(<Playground />);
+      fireEvent.click(screen.getByText("Pop!"));
+      await act(async () => { vi.advanceTimersByTime(400); });
+      expect(screen.queryByText("Bubbles")).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
-  it("home button returns to hub", () => {
-    render(<Playground />);
-    fireEvent.click(screen.getByText("Pop!"));
-    // Home button is present on activity screens
-    fireEvent.click(screen.getByRole("button", { name: /home/i }));
-    expect(screen.getByText("Bubbles")).toBeInTheDocument();
+  it("home button returns to hub", async () => {
+    vi.useFakeTimers();
+    try {
+      render(<Playground />);
+      fireEvent.click(screen.getByText("Pop!"));
+      // Advance past the full 950ms transition so `transition` state clears
+      // before we click home (guard prevents re-entry while active)
+      await act(async () => { vi.advanceTimersByTime(960); });
+      // Home button is present on activity screens
+      fireEvent.click(screen.getByRole("button", { name: /home/i }));
+      await act(async () => { vi.advanceTimersByTime(400); });
+      expect(screen.getByText("Bubbles")).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
