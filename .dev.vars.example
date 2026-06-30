@@ -1,0 +1,7 @@
+# Copy this file to .dev.vars (gitignored) and fill in real values for local dev.
+# These three secrets are also required as Cloudflare Worker secrets for production
+# and preview environments (set with: npx wrangler secret put <NAME>).
+
+GROWNUPS_PASSWORD=changeme
+SESSION_SECRET=a-long-random-secret-at-least-32-characters
+INVITE_SLUG=a-random-url-safe-token

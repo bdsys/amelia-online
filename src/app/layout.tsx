@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Baloo_2, Nunito } from "next/font/google";
+import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
 
 // Display face — chunky, rounded, storybook. Used only for Amelia's name.
-const baloo = Baloo_2({
+const fredoka = Fredoka({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
 });
 
 // Body / utility face — rounded, highly legible.
@@ -16,9 +16,9 @@ const nunito = Nunito({
 });
 
 const SITE_URL = "https://amelialass.com";
-const title = "Amelia — coming soon";
+const title = "Amelia's Playground";
 const description =
-  "A playful little website for Amelia is on its way — birthday adventures, wish lists, and more.";
+  "A playful little website for Amelia — games, stickers, painting, and more!";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -38,8 +38,6 @@ export const metadata: Metadata = {
     title,
     description,
   },
-  // Placeholder site — keep it out of search results until launch.
-  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({
@@ -48,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${baloo.variable} ${nunito.variable} h-full antialiased`}
+      className={`${fredoka.variable} ${nunito.variable} h-full antialiased`}
     >
       <body className="flex min-h-dvh flex-col bg-[var(--color-bg)] text-[var(--color-ink)]">
         {children}

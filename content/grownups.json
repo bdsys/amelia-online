@@ -1,0 +1,37 @@
+{
+  "wishlists": {
+    "christmas": {
+      "title": "Christmas List",
+      "emoji": "🎄",
+      "items": [
+        { "name": "Puppy plush", "note": "Soft cuddly one with floppy ears", "url": "" },
+        { "name": "Rescue vehicle playset", "note": "Fire truck + helicopter", "url": "" },
+        { "name": "Unicorn night light", "note": "Colour-changing, for her room", "url": "" },
+        { "name": "Watercolour paint set", "note": "Washable!", "url": "" },
+        { "name": "Picture book bundle", "note": "Any puppy or rescue stories", "url": "" }
+      ]
+    },
+    "birthday": {
+      "title": "Birthday List",
+      "emoji": "🎂",
+      "items": [
+        { "name": "Kids scooter", "note": "With a helmet, please", "url": "" },
+        { "name": "Dress-up costume", "note": "Vet or rescue-pup outfit", "url": "" },
+        { "name": "Building blocks", "note": "Big chunky ones", "url": "" },
+        { "name": "Toy kitchen bits", "note": "Pots, pans, play food", "url": "" },
+        { "name": "Sticker activity books", "note": "She loves stickers", "url": "" }
+      ]
+    }
+  },
+  "party": {
+    "who": "Amelia",
+    "age": 5,
+    "date": "Saturday, March 14",
+    "time": "2:00 - 4:00 PM",
+    "place": "The Lass House",
+    "address": "123 Maple Street",
+    "note": "Wear comfy clothes - there will be puppies, bubbles, and cake!",
+    "rsvpEmail": "hello@amelialass.com"
+  },
+  "_note": "PLACEHOLDER CONTENT - replace with real details before launch. This file is the single source of truth for the grown-ups section; it must be served only from behind the auth gate (see README)."
+}
