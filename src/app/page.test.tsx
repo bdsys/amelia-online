@@ -1,21 +1,25 @@
 import { render, screen } from "@testing-library/react";
 import Home from "./page";
 
-describe("coming-soon page", () => {
-  it("shows Amelia's name", () => {
+vi.mock("next/image", () => ({
+  default: ({ src, alt, ...props }: { src: string; alt: string; [key: string]: unknown }) =>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} {...props} />,
+}));
+vi.mock("next/link", () => ({
+  default: ({ href, children }: { href: string; children: React.ReactNode }) =>
+    <a href={href}>{children}</a>,
+}));
+
+describe("playground home page", () => {
+  it("renders the hub with a grown-ups link", () => {
     render(<Home />);
-    expect(
-      screen.getByRole("heading", { level: 1, name: "Amelia" })
-    ).toBeInTheDocument();
+    const link = screen.getByRole("link", { name: /grown.ups/i });
+    expect(link).toHaveAttribute("href", "/grownups");
   });
 
-  it("announces that the site is coming soon", () => {
+  it("renders an avatar image", () => {
     render(<Home />);
-    expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
-  });
-
-  it("shows the domain", () => {
-    render(<Home />);
-    expect(screen.getByText("amelialass.com")).toBeInTheDocument();
+    expect(screen.getByRole("img")).toBeInTheDocument();
   });
 });
