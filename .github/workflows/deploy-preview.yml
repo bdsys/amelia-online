@@ -64,3 +64,15 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Sync Worker secrets (preview)
+        run: |
+          printf '%s' "$GROWNUPS_PASSWORD" | npx wrangler secret put GROWNUPS_PASSWORD --env preview
+          printf '%s' "$SESSION_SECRET"    | npx wrangler secret put SESSION_SECRET    --env preview
+          printf '%s' "$INVITE_SLUG"       | npx wrangler secret put INVITE_SLUG       --env preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GROWNUPS_PASSWORD: ${{ secrets.GROWNUPS_PASSWORD }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          INVITE_SLUG: ${{ secrets.INVITE_SLUG }}

@@ -84,10 +84,10 @@ echo ""
 echo "Smoke tests → ${BASE}"
 echo "────────────────────────────────────────────────────"
 
-# Homepage: the coming-soon hero
+# Homepage: playground hub
 check "/"            "Amelia"
-check "/"            "Coming soon"
-check "/"            "amelialass.com"
+check "/"            "Pop!"
+check "/"            "Grown-ups"
 
 # SEO routes — must return 200 with expected content
 check "/robots.txt"  "Disallow"
