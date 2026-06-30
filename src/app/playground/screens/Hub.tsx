@@ -19,7 +19,7 @@ type HubProps = {
   cards: readonly CardDef[];
   cardBg: string[];
   cardShadow: string[];
-  onGoTo: (s: Screen) => void;
+  onGoTo: (s: Exclude<Screen, "hub">) => void;
   theme: ThemeKey;
   onCycleTheme: () => void;
 };
@@ -165,7 +165,7 @@ export default function Hub({
         {cards.map((card, i) => (
           <button
             key={card.id}
-            onClick={() => onGoTo(card.id as Screen)}
+            onClick={() => onGoTo(card.id as Exclude<Screen, "hub">)}
             style={{
               background: cardBg[i % 4],
               boxShadow: `0 6px 0 ${cardShadow[i % 4]}`,

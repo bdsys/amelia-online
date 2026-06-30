@@ -287,6 +287,11 @@ export default function Playground() {
   const launchTo = useCallback(
     (toScreen: Screen, kind: TransitionKind) => {
       if (transition) return; // guard: no re-entry during active transition
+      // Stop bubble timer immediately so no new bubbles spawn during transition
+      if (bubbleTimerRef.current) {
+        clearInterval(bubbleTimerRef.current);
+        bubbleTimerRef.current = null;
+      }
       setTransition(buildTransition(THEMES[theme], kind));
 
       transT1Ref.current = setTimeout(() => {
@@ -295,10 +300,6 @@ export default function Playground() {
           spawnBubble();
           bubbleTimerRef.current = setInterval(spawnBubble, 650);
         } else {
-          if (bubbleTimerRef.current) {
-            clearInterval(bubbleTimerRef.current);
-            bubbleTimerRef.current = null;
-          }
           setBubbles([]);
         }
         if (toScreen === "memory") {
@@ -314,7 +315,7 @@ export default function Playground() {
   );
 
   const goTo = useCallback(
-    (s: Screen) => launchTo(s, s as TransitionKind),
+    (s: Exclude<Screen, "hub">) => launchTo(s, s as TransitionKind),
     [launchTo]
   );
 
@@ -608,9 +609,9 @@ export default function Playground() {
             }}
           />
           {/* Emoji pieces */}
-          {transition.pieces.map((p, i) => (
-            <span key={i} style={p.st as React.CSSProperties}>
-              {p.e}
+          {transition.pieces.map((piece, i) => (
+            <span key={i} style={piece.st as React.CSSProperties}>
+              {piece.e}
             </span>
           ))}
           {/* Center emoji */}
