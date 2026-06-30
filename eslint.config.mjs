@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     // Cloudflare build output — generated files, not source
     ".open-next/**",
     ".wrangler/**",
+    // CommonJS helper scripts for Playwright E2E (CJS require() is intentional)
+    "tests/e2e/*.cjs",
   ]),
 ]);
 

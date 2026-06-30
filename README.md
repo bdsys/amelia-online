@@ -1,5 +1,10 @@
 # amelia-online
 
+[![Quality](https://img.shields.io/github/actions/workflow/status/bdsys/amelia-online/quality.yml?branch=main&style=flat-square&label=quality)](https://github.com/bdsys/amelia-online/actions/workflows/quality.yml)
+[![E2E](https://img.shields.io/github/actions/workflow/status/bdsys/amelia-online/e2e.yml?branch=main&style=flat-square&label=e2e)](https://github.com/bdsys/amelia-online/actions/workflows/e2e.yml)
+[![Deploy](https://img.shields.io/github/actions/workflow/status/bdsys/amelia-online/deploy.yml?branch=main&style=flat-square&label=deploy)](https://github.com/bdsys/amelia-online/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](#license)
+
 A playful personal website for Amelia — **amelialass.com**. Right now it's a
 placeholder "coming soon" page whose job is to prove the infrastructure and CI/CD
 are wired correctly. A designer will build the real site on top of this scaffold.
@@ -64,11 +69,12 @@ Open feature/fix branches off `dev`, PR them into `dev`, then promote `dev → p
 
 CI/CD is automated via GitHub Actions:
 
-| Workflow              | Trigger                       | Action                                              |
-| --------------------- | ----------------------------- | --------------------------------------------------- |
-| `quality.yml`         | push/PR `main`,`dev`,`preview` | lint → typecheck → unit tests                       |
-| `deploy.yml`          | push `main`                   | quality gate → `build:worker` → deploy (production) |
-| `deploy-preview.yml`  | push `preview`                | quality gate → `build:worker` → deploy (preview env) |
+| Workflow              | Trigger                        | Action                                                           |
+| --------------------- | ------------------------------ | ---------------------------------------------------------------- |
+| `quality.yml`         | push/PR `main`,`dev`,`preview` | lint · typecheck · unit tests (parallel: + curl smoke test)      |
+| `e2e.yml`             | push/PR `main`,`dev`,`preview` | Playwright E2E on ubuntu-22.04 against real Workers runtime      |
+| `deploy.yml`          | push `main`                    | quality gate → `build:worker` → deploy (production) → sync secrets |
+| `deploy-preview.yml`  | push `preview`                 | quality gate → `build:worker` → deploy (preview env) → sync secrets |
 
 Wrangler authenticates from two repo secrets:
 
@@ -113,5 +119,10 @@ src/app/
   robots.ts / sitemap.ts
   not-found.tsx / error.tsx
 wrangler.toml         # Worker config (production + preview, custom domains staged)
-.github/workflows/    # quality, deploy, deploy-preview
+.github/workflows/    # quality, e2e, deploy, deploy-preview
+tests/e2e/            # Playwright E2E specs (runs in CI on ubuntu-22.04)
 ```
+
+## License
+
+MIT

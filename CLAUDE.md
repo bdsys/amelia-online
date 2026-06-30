@@ -27,8 +27,9 @@ npm run dev          # dev server on :3000
 npm run lint         # ESLint
 npm run typecheck    # tsc --noEmit
 npm run test         # Vitest unit tests (jsdom)
+npm run test:e2e     # Playwright E2E (CI-only on this host — see note below)
 npm run build:worker # OpenNext Cloudflare build
-npm run preview      # run the built Worker locally (workerd)
+npm run preview      # run the built Worker locally (workerd on :8787)
 npm run deploy       # deploy to Cloudflare (CI does this on push to main)
 ```
 
@@ -37,6 +38,7 @@ Or via the `Makefile`:
 ```bash
 make up / make down  # start / stop the backgrounded dev server (:3000)
 make typecheck lint test
+make test-e2e        # Playwright E2E (CI-only on this WSL2 host)
 make test-smoke      # build + curl every route, checking content
 make test-all        # typecheck → lint → test → test-smoke  (full local gate)
 make build-worker    # OpenNext Cloudflare build
@@ -46,6 +48,12 @@ make clean           # rm -rf .next .open-next .wrangler
 
 Run the full local gate before pushing: `make test-all` (or
 `npm run lint && npm run typecheck && npm run test`).
+
+> **Playwright note:** `npm run test:e2e` runs 4 spec files against the real Workers
+> runtime (`npm run preview` on :8787). In CI (ubuntu-22.04) Playwright installs
+> Chromium automatically. On this WSL2 host Playwright's Chromium binaries are
+> incompatible — push to `dev`/`preview` to trigger the `e2e.yml` check instead,
+> or set `PLAYWRIGHT_EXECUTABLE_PATH` to a separately-installed Chromium binary.
 
 ## Conventions
 
@@ -59,7 +67,16 @@ Run the full local gate before pushing: `make test-all` (or
 
 ## CI/CD
 
-GitHub Actions: `quality.yml` (lint/typecheck/test on push+PR to main/preview),
-`deploy.yml` (push to main → build:worker → deploy), `deploy-preview.yml` (push to
-preview → preview env). Deploys authenticate via the `CLOUDFLARE_API_TOKEN` and
-`CLOUDFLARE_ACCOUNT_ID` repo secrets.
+GitHub Actions workflows:
+
+| File | Triggers | What it does |
+|------|----------|--------------|
+| `quality.yml` | push/PR to `main`/`dev`/`preview` | lint · typecheck · Vitest unit tests (parallel: `quality` + `smoke` jobs) |
+| `e2e.yml` | push/PR to `main`/`dev`/`preview` | Playwright E2E on ubuntu-22.04 against real workerd; uploads report on failure |
+| `deploy.yml` | push to `main` | quality gate → build:worker → deploy production → sync Worker secrets |
+| `deploy-preview.yml` | push to `preview` | same, targets `amelia-online-preview` env |
+
+Deploys authenticate via `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repo secrets.
+`GROWNUPS_PASSWORD`, `SESSION_SECRET`, and `INVITE_SLUG` are also GitHub repo secrets;
+the deploy workflows sync them to Cloudflare Worker secrets via `wrangler secret put`
+after each deploy.
