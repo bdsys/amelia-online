@@ -86,7 +86,7 @@ export default function Hub({
             lineHeight: 1.1,
           }}
         >
-          {greeting.text}, Amelia!
+          {greeting.text}, Amelia and friends!
         </h1>
       </div>
 
