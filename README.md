@@ -43,15 +43,32 @@ npm run build:worker # OpenNext Cloudflare build → .open-next/
 npm run preview      # Run the built Worker locally (workerd)
 ```
 
+## Branches & environments
+
+```
+feature/* or fix/*  ──PR──▶  dev  ──PR──▶  preview  ──PR──▶  main
+   (CI on PR)              (CI checks)   (deploys staging)  (deploys prod)
+```
+
+| Branch      | Purpose                       | On push                                   | URL                          |
+| ----------- | ----------------------------- | ----------------------------------------- | ---------------------------- |
+| `feature/*` | a single feature or bugfix    | CI runs when you open a PR into `dev`     | —                            |
+| `dev`       | integration / initial CI gate | quality checks (no deploy)                | —                            |
+| `preview`   | staging                       | quality gate → deploy preview Worker      | https://preview.www.amelialass.com |
+| `main`      | production                    | quality gate → deploy production Worker   | https://amelialass.com       |
+
+Open feature/fix branches off `dev`, PR them into `dev`, then promote `dev → preview`
+(check staging) → `preview → main` (go live).
+
 ## Deployment
 
 CI/CD is automated via GitHub Actions:
 
-| Workflow              | Trigger              | Action                                              |
-| --------------------- | -------------------- | --------------------------------------------------- |
-| `quality.yml`         | push/PR `main`,`preview` | lint → typecheck → unit tests                    |
-| `deploy.yml`          | push `main`          | quality gate → `build:worker` → deploy (production) |
-| `deploy-preview.yml`  | push `preview`       | quality gate → `build:worker` → deploy (preview env) |
+| Workflow              | Trigger                       | Action                                              |
+| --------------------- | ----------------------------- | --------------------------------------------------- |
+| `quality.yml`         | push/PR `main`,`dev`,`preview` | lint → typecheck → unit tests                       |
+| `deploy.yml`          | push `main`                   | quality gate → `build:worker` → deploy (production) |
+| `deploy-preview.yml`  | push `preview`                | quality gate → `build:worker` → deploy (preview env) |
 
 Wrangler authenticates from two repo secrets:
 

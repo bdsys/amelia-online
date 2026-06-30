@@ -19,7 +19,8 @@ pattern = "www.amelialass.com"
 custom_domain = true
 
 # ── Preview / staging environment ─────────────────────────────────────────────
-# Deploy with: npm run deploy:preview  (push to the `preview` branch in CI)
+# Separate Worker (amelia-online-preview) on its own staging domain.
+# Deployed by deploy-preview.yml on every push to the `preview` branch.
 [env.preview]
 name = "amelia-online-preview"
 
@@ -27,7 +28,10 @@ name = "amelia-online-preview"
 directory = ".open-next/assets"
 binding = "ASSETS"
 
-# Uncomment once preview.amelialass.com DNS is ready (Stage B):
-# [[env.preview.routes]]
-# pattern = "preview.amelialass.com"
-# custom_domain = true
+# Staging custom domain. Cloudflare auto-provisions a certificate for this exact
+# hostname when the Worker custom domain is attached (may take a few minutes on
+# the first deploy). Two levels deep is fine — Workers custom domains issue a
+# per-hostname cert rather than relying on the *.amelialass.com universal cert.
+[[env.preview.routes]]
+pattern = "preview.www.amelialass.com"
+custom_domain = true
