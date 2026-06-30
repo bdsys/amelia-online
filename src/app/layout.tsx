@@ -16,9 +16,9 @@ const nunito = Nunito({
 });
 
 const SITE_URL = "https://amelialass.com";
-const title = "Amelia — coming soon";
+const title = "Amelia's Playground";
 const description =
-  "A playful little website for Amelia is on its way — birthday adventures, wish lists, and more.";
+  "A playful little website for Amelia — games, stickers, painting, and more!";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -38,8 +38,6 @@ export const metadata: Metadata = {
     title,
     description,
   },
-  // Placeholder site — keep it out of search results until launch.
-  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({
