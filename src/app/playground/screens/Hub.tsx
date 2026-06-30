@@ -114,7 +114,7 @@ export default function Hub({
             fontSize: 17,
           }}
         >
-          🎈 {daysLeft} sleeps to go!
+          🎈 {daysLeft} more sleeps to go until my birthday!
         </span>
       </div>
 
