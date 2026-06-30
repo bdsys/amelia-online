@@ -35,6 +35,13 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: "on-first-retry",
+    // Disable infinite CSS animations (pg-bob, pg-pulse) so elements are stable for clicks.
+    // globals.css ships `@media (prefers-reduced-motion: reduce) { *[style*="animation"] { animation: none } }`
+    // which matches every inline-animated element in this app.
+    // In Playwright ≥1.61 reducedMotion lives under contextOptions (not top-level use).
+    contextOptions: {
+      reducedMotion: "reduce",
+    },
   },
   projects: [
     {
