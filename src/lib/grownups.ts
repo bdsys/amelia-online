@@ -1,16 +1,15 @@
 import "server-only";
 import data from "../../content/grownups.json";
 
-export interface WishlistItem {
-  name: string;
-  note: string;
+export interface WishlistLink {
+  label: string;
   url: string;
 }
 
 export interface Wishlist {
   title: string;
   emoji: string;
-  items: WishlistItem[];
+  lists: WishlistLink[];
 }
 
 export interface PartyData {
@@ -22,6 +21,15 @@ export interface PartyData {
   address: string;
   note: string;
   rsvpEmail: string;
+}
+
+/** Strip www. and return hostname, e.g. "amazon.com". Returns "" on invalid URL. */
+export function hostname(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
 }
 
 export function getWishlist(which: "christmas" | "birthday"): Wishlist {

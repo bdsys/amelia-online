@@ -9,6 +9,8 @@ A playful personal website for Amelia — **amelialass.com**. Right now it's a
 placeholder "coming soon" page whose job is to prove the infrastructure and CI/CD
 are wired correctly. A designer will build the real site on top of this scaffold.
 
+Update "grownups" content at content/grownups.json
+
 It mirrors the deployment architecture of [andrewlass.com](https://andrewlass.com):
 **Next.js 16 (App Router) + React 19 + Tailwind CSS v4**, deployed to **Cloudflare
 Workers** via the [`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare)

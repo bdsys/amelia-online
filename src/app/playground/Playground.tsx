@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { greeting, ageNow, daysToBday } from "@/lib/playground-date";
+import { type ThemeKey, THEME_ORDER, THEMES, themeToCssVars } from "@/lib/playground-theme";
+import { buildTransition, type TransitionKind, type TransitionData } from "@/lib/playground-transition";
 import Hub from "./screens/Hub";
 import Pop from "./screens/Pop";
 import Bubbles from "./screens/Bubbles";
@@ -199,6 +201,31 @@ export default function Playground() {
   // ABC
   const [abcActive, setAbcActive] = useState<number | null>(null);
 
+  // Theme
+  const [theme, setTheme] = useState<ThemeKey>("bright"); // default for SSR
+
+  // Transition overlay
+  const [transition, setTransition] = useState<TransitionData | null>(null);
+  const transT1Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transT2Ref = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Read persisted theme after mount — avoids hydration mismatch.
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem("amelia-theme");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      if (s === "bright" || s === "pastel" || s === "dreamy") setTheme(s as ThemeKey);
+    } catch {}
+  }, []);
+
+  const cycleTheme = useCallback(() => {
+    setTheme((t) => {
+      const next = THEME_ORDER[(THEME_ORDER.indexOf(t) + 1) % THEME_ORDER.length];
+      try { localStorage.setItem("amelia-theme", next); } catch {}
+      return next;
+    });
+  }, []);
+
   // Greeting / age / countdown — cheap to compute, just do it in render
   const greetingData = useMemo(() => greeting(), []);
   const age = useMemo(() => ageNow(), []);
@@ -257,41 +284,51 @@ export default function Playground() {
   }, []);
 
   // ── Screen navigation ─────────────────────────────────────────────────────
-  const goTo = useCallback(
-    (s: Screen) => {
-      setScreen(s);
-      if (s === "bubbles") {
-        spawnBubble();
-        bubbleTimerRef.current = setInterval(spawnBubble, 650);
-      } else {
-        if (bubbleTimerRef.current) {
-          clearInterval(bubbleTimerRef.current);
-          bubbleTimerRef.current = null;
+  const launchTo = useCallback(
+    (toScreen: Screen, kind: TransitionKind) => {
+      if (transition) return; // guard: no re-entry during active transition
+      // Stop bubble timer immediately so no new bubbles spawn during transition
+      if (bubbleTimerRef.current) {
+        clearInterval(bubbleTimerRef.current);
+        bubbleTimerRef.current = null;
+      }
+      setTransition(buildTransition(THEMES[theme], kind));
+
+      transT1Ref.current = setTimeout(() => {
+        setScreen(toScreen);
+        if (toScreen === "bubbles") {
+          spawnBubble();
+          bubbleTimerRef.current = setInterval(spawnBubble, 650);
+        } else {
+          setBubbles([]);
         }
-        setBubbles([]);
-      }
-      if (s === "memory") {
-        setMemCards(makeMemCards());
-        memLockedRef.current = false;
-      }
-      setAbcActive(null);
+        if (toScreen === "memory") {
+          setMemCards(makeMemCards());
+          memLockedRef.current = false;
+        }
+        setAbcActive(null);
+      }, 380);
+
+      transT2Ref.current = setTimeout(() => setTransition(null), 950);
     },
-    [spawnBubble]
+    [transition, theme, spawnBubble]
+  );
+
+  const goTo = useCallback(
+    (s: Exclude<Screen, "hub">) => launchTo(s, s as TransitionKind),
+    [launchTo]
   );
 
   const goHome = useCallback(() => {
-    if (bubbleTimerRef.current) {
-      clearInterval(bubbleTimerRef.current);
-      bubbleTimerRef.current = null;
-    }
-    setBubbles([]);
-    setScreen("hub");
-  }, []);
+    launchTo("hub", "home");
+  }, [launchTo]);
 
-  // Clean up bubble timer on unmount
+  // Clean up all timers on unmount
   useEffect(() => {
     return () => {
       if (bubbleTimerRef.current) clearInterval(bubbleTimerRef.current);
+      if (transT1Ref.current) clearTimeout(transT1Ref.current);
+      if (transT2Ref.current) clearTimeout(transT2Ref.current);
     };
   }, []);
 
@@ -429,6 +466,7 @@ export default function Playground() {
         fontFamily: "var(--font-display)",
         position: "relative",
         overflow: "hidden",
+        ...themeToCssVars(THEMES[theme]),
       }}
     >
       {screen === "hub" && (
@@ -440,6 +478,7 @@ export default function Playground() {
           cardBg={CARD_BG}
           cardShadow={CARD_SHADOW}
           onGoTo={goTo}
+          onCycleTheme={cycleTheme}
         />
       )}
       {screen === "pop" && (
@@ -536,6 +575,57 @@ export default function Playground() {
           {p.e}
         </div>
       ))}
+
+      {/* Transition overlay */}
+      {transition && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 200,
+            overflow: "hidden",
+            pointerEvents: "auto",
+          }}
+        >
+          {/* Backdrop circle */}
+          <div
+            style={{
+              position: "absolute",
+              left: transition.ox,
+              top: transition.oy,
+              width: "300vmax",
+              height: "300vmax",
+              marginLeft: "-150vmax",
+              marginTop: "-150vmax",
+              borderRadius: "50%",
+              background: transition.bg,
+              animation: "pg-tr-cover .95s ease-in-out forwards",
+            }}
+          />
+          {/* Emoji pieces */}
+          {transition.pieces.map((piece, i) => (
+            <span key={i} style={piece.st as React.CSSProperties}>
+              {piece.e}
+            </span>
+          ))}
+          {/* Center emoji */}
+          <span
+            style={{
+              position: "absolute",
+              left: transition.ox,
+              top: transition.oy,
+              fontSize: "118px",
+              lineHeight: 1,
+              willChange: "transform",
+              filter: "drop-shadow(0 8px 12px rgba(0,0,0,.28))",
+              animation: transition.centerAnim,
+            }}
+          >
+            {transition.emoji}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -65,4 +65,22 @@ test.describe("Grown-ups auth", () => {
       page.getByRole("heading", { name: "Amelia's Grown-ups Corner" })
     ).toBeVisible();
   });
+
+  test("wishlist pages render {label,url} card entries as Open › links", async ({
+    page,
+  }) => {
+    // Log in to set the auth cookie
+    await page.goto("/grownups/login");
+    await page.getByPlaceholder("Password").fill(GROWNUPS_PASSWORD);
+    await page.getByRole("button", { name: /Enter/i }).click();
+    await expect(page).toHaveURL(/\/grownups$/);
+
+    // Christmas wishlist
+    await page.goto("/grownups/christmas");
+    await expect(page.getByText("Open ›")).toBeVisible();
+
+    // Birthday wishlist
+    await page.goto("/grownups/birthday");
+    await expect(page.getByText("Open ›")).toBeVisible();
+  });
 });

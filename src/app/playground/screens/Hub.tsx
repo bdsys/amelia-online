@@ -18,7 +18,8 @@ type HubProps = {
   cards: readonly CardDef[];
   cardBg: string[];
   cardShadow: string[];
-  onGoTo: (s: Screen) => void;
+  onGoTo: (s: Exclude<Screen, "hub">) => void;
+  onCycleTheme: () => void;
 };
 
 export default function Hub({
@@ -29,6 +30,7 @@ export default function Hub({
   cardBg,
   cardShadow,
   onGoTo,
+  onCycleTheme,
 }: HubProps) {
   return (
     <div
@@ -43,6 +45,36 @@ export default function Hub({
         boxSizing: "border-box",
       }}
     >
+      {/* Theme pill */}
+      <button
+        onClick={onCycleTheme}
+        style={{
+          position: "fixed",
+          top: 16,
+          right: 16,
+          background: "var(--pg-play)",
+          border: "none",
+          borderRadius: 999,
+          padding: "8px 18px",
+          fontSize: 22,
+          cursor: "pointer",
+          animation: "pg-pulse 2.2s ease-in-out infinite",
+          backdropFilter: "blur(6px)",
+          color: "var(--pg-ink)",
+          fontFamily: "var(--font-display)",
+          fontWeight: 700,
+          zIndex: 10,
+          minWidth: 48,
+          minHeight: 48,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        aria-label="Change theme"
+      >
+        🎨
+      </button>
+
       {/* Avatar */}
       <div
         style={{
@@ -131,7 +163,7 @@ export default function Hub({
         {cards.map((card, i) => (
           <button
             key={card.id}
-            onClick={() => onGoTo(card.id as Screen)}
+            onClick={() => onGoTo(card.id as Exclude<Screen, "hub">)}
             style={{
               background: cardBg[i % 4],
               boxShadow: `0 6px 0 ${cardShadow[i % 4]}`,
