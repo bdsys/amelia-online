@@ -320,10 +320,6 @@ export default function Playground() {
   );
 
   const goHome = useCallback(() => {
-    if (bubbleTimerRef.current) {
-      clearInterval(bubbleTimerRef.current);
-      bubbleTimerRef.current = null;
-    }
     launchTo("hub", "home");
   }, [launchTo]);
 
@@ -482,7 +478,6 @@ export default function Playground() {
           cardBg={CARD_BG}
           cardShadow={CARD_SHADOW}
           onGoTo={goTo}
-          theme={theme}
           onCycleTheme={cycleTheme}
         />
       )}

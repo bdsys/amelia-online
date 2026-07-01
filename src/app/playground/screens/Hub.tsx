@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Screen } from "../Playground";
 import type { Greeting } from "@/lib/playground-date";
-import type { ThemeKey } from "@/lib/playground-theme";
 
 type CardDef = {
   id: string;
@@ -20,7 +19,6 @@ type HubProps = {
   cardBg: string[];
   cardShadow: string[];
   onGoTo: (s: Exclude<Screen, "hub">) => void;
-  theme: ThemeKey;
   onCycleTheme: () => void;
 };
 

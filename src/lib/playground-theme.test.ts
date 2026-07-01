@@ -73,6 +73,13 @@ describe("themeToCssVars", () => {
     const vars = themeToCssVars(THEMES.dreamy);
     expect(vars["--pg-ink"]).toBe(THEMES.dreamy.ink);
   });
+
+  it("sets --pg-play from palette play for each theme", () => {
+    for (const key of THEME_ORDER) {
+      const vars = themeToCssVars(THEMES[key as ThemeKey]);
+      expect(vars["--pg-play"]).toBe(THEMES[key as ThemeKey].play);
+    }
+  });
 });
 
 describe("cycle order", () => {
